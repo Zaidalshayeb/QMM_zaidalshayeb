@@ -1,0 +1,15 @@
+---
+title: "zalshaye_1_Q1"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+data <- read.csv("C:\\Users\\Z\\Desktop\\addresses.csv")
+summary(data)
+plot(data$Age)
+```
