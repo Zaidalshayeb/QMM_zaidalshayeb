@@ -1,0 +1,87 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```
+{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+dir.create("images")
+```
+
+```{r}
+install.packages("lpSolveAP")
+```
+
+Now, load the library we need to do assignment 4.
+```{r}
+library(lpSolveAPI)
+
+```
+
+```{r}
+# make an lp object with 11 constraints (rows) and 9 (colums) decision variables
+lprec <- make.lp(11, 9)
+# Now create the objective function. The default is a minimization problem. 
+set.objfn(lprec, c(420, 360, 300,420,360,300,420,350,300))
+# As the default is a minimization problem, we change the direction to set maximization
+lp.control(lprec,sense='max')
+# Add the three Plant capacity constraints by large, medium, & small sizes
+# First set of constraints are for Plant 1
+add.constraint(lprec, c(1, 1, 1, 0, 0, 0, 0, 0, 0), "<=", 750)
+add.constraint(lprec, c(0, 0, 0, 1, 1, 1, 0, 0, 0), "<=", 900)
+add.constraint(lprec, c(0, 0, 0, 0, 0, 0, 1, 1, 1), "<=", 450)
+# Add the in-progress storage requirements contraint by large, medium, & small sizes
+add.constraint(lprec, c(20, 15, 12, 0, 0, 0, 0, 0, 0), "<=", 13000)
+add.constraint(lprec, c(0, 0, 0, 20, 15, 12, 0, 0, 0), "<=", 12000)
+add.constraint(lprec, c(0, 0, 0, 0, 0, 0, 20, 15, 12), "<=", 5000)
+# Add the sales forecasts requirements contraint by large, medium, & small sizes
+add.constraint(lprec, c(1, 0, 0, 1, 0, 0, 1, 0, 0), "<=", 900)
+add.constraint(lprec, c(0, 1, 0, 0, 1, 0, 0, 1, 0), "<=", 1200)
+add.constraint(lprec, c(0, 0, 1, 0, 0, 1, 0, 0, 1), "<=", 750)
+
+add.constraint(lprec, c(1/750, 1/750, 1/750, -1/900, -1/900, -1/900, 0, 0, 0), "<=", 0)
+add.constraint(lprec, c(1/750, 1/750, 1/750, 0, 0, 0, -1/450, -1/450, -1/450), "<=", 0)
+
+set.bounds(lprec, lower = c(0, 0, 0, 0, 0, 0, 0, 0, 0), columns = c(1, 2, 3, 4, 5, 6, 7, 8, 9)) #Not really needed but 
+RowNames <- c("Plant1_excess_capacity", "Plant2_excess_capacity", "Plant3_excess_capacity","Plant1_in-progess_storage", "Plant2_in-progress_storage", "Plant3_excess_storage", "Plant1_sales_forecast", "Plant2_sales_forecast", "Plant3_sales_forecast", "Layoff_prevention_Plant1_&_Plant2", "Layoff_prevention_Plant_1_&_Plant3", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint", "non-negativity_constraint")
+ColNames <- c("Product1_large_sizes", "Product1_medium_sizes", "Plant1_small_sizes", "Plant2_large_sizes", "Plant2_medium sizes", "Plant2_small_sizes", "Plant3_large_sizes", "Plant_3_medium_sizes", "Plant3_small_sizes")
+dimnames(lprec) <- list(RowNames, ColNames)
+# Now, print out the model
+lprec
+# The model can also be saved to a file
+write.lp(lprec, filename = "Weigelt_Corporation_problem", type = "lp")
+
+```
+
+We now solve the above LP problem
+```{r}
+solve(lprec)
+```
+
+The output above doesn't indicate that the answer is 0, but that there was a successful solution
+We now output the value of the objective function, and the variables
+```{r}
+get.objective(lprec)
+get.variables(lprec)
+```
+
+```{r}
+write.lp(lprec, filename = "Weigelt_Corporation_problem", type = "lp")
+x <- read.lp(filename = "Wyndsor.lp") 
+# create an lp object x
+x                          
+# display x               
+
+```
+
+Solve the lp model
+```{r}
+solve(x)
+get.objective(x)        # get objective value
+get.variables(x)        # get values of decision variables
+get.constraints(x)      # get constraint RHS values
+```
