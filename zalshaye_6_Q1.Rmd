@@ -1,0 +1,22 @@
+---
+title: "zalshaye_6_Q1"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(lpSolveAPI)
+BIP.ip <- read.lp("C:\\Users\\Z\\Desktop\\BIP.lp")
+BIP.ip
+solve(BIP.ip)
+get.objective(BIP.ip)
+get.variables(BIP.ip)
+
+# put optimal values beside of variable names for better understanding of th results
+#cbind(arc.names, get.variables(BIP.ip))
+```

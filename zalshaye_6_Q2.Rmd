@@ -1,0 +1,19 @@
+---
+title: "zalshaye_6_Q2"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(lpSolveAPI)
+SIP.ip <- read.lp("C:\\Users\\Z\\Desktop\\SIP.lp")
+SIP.ip
+solve(SIP.ip)
+get.objective(SIP.ip)
+get.variables(SIP.ip)
+```
